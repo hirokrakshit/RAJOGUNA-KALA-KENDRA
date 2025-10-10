@@ -1,0 +1,8 @@
+{
+  "short_name": "Rajoguna",
+  "name": "Rajoguna Kala Kendra",
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#8B5CF6",
+  "background_color": "#ffffff"
+}
