@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { User, Lock, Mail, Phone, LogOut, Menu, X, Home, Calendar, BookOpen, FileText, DollarSign, MessageCircle, Award, Bell, Users, Settings, Eye, EyeOff, Music, Sparkles } from 'lucide-react';
+import React, { useState } from 'react';
+import { Lock, Mail, LogOut, Menu, Calendar, BookOpen, DollarSign, MessageCircle, Award, Bell, Users, Settings, Eye, EyeOff, Sparkles, X } from 'lucide-react';
 
-// Mock Database (In production, connect to Firebase)
 const MOCK_USERS = {
   'admin@rajoguna.com': {
     password: 'Admin@123',
@@ -39,22 +38,9 @@ const MOCK_NOTICES = [
   { id: 3, title: 'Music Competition', date: '2025-10-10', content: 'Inter-institute music competition registration open', dept: 'Music' }
 ];
 
-const MOCK_CALENDAR = [
-  { id: 1, title: 'Diwali Break', date: '2025-11-01', type: 'holiday' },
-  { id: 2, title: 'Dance Exam', date: '2025-11-15', type: 'exam', dept: 'Dance' },
-  { id: 3, title: 'Music Recital', date: '2025-11-20', type: 'event', dept: 'Music' }
-];
-
-const MOCK_RESOURCES = [
-  { id: 1, title: 'Classical Dance Basics - PDF', type: 'pdf', dept: 'Dance', url: '#' },
-  { id: 2, title: 'Raag Theory - Video', type: 'video', dept: 'Music', url: '#' },
-  { id: 3, title: 'Tabla Practice Sessions', type: 'audio', dept: 'Music', url: '#' }
-];
-
 const RajogunaPWA = () => {
   const [currentUser, setCurrentUser] = useState(null);
   const [currentScreen, setCurrentScreen] = useState('login');
-  const [menuOpen, setMenuOpen] = useState(false);
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -65,17 +51,15 @@ const RajogunaPWA = () => {
   ]);
   const [chatInput, setChatInput] = useState('');
 
-  // Admin States
-  const [students, setStudents] = useState([
+  const [students] = useState([
     { email: 'student1@example.com', name: 'Priya Sharma', dept: 'Dance', phone: '9876543211' },
-    { email: 'student2@example.com', name: 'Rahul Verma', dept: 'Music', phone: '9876543212' }
+    { email: 'student2@example.com', name: 'Rahul Verma', dept: 'Music', phone: '9876543212' },
+    { email: 'student3@example.com', name: 'Anita Patel', dept: 'Dance', phone: '9876543213' },
+    { email: 'student4@example.com', name: 'Vikram Singh', dept: 'Music', phone: '9876543214' }
   ]);
-  const [selectedStudent, setSelectedStudent] = useState(null);
 
-  const handleLogin = (e) => {
-    e.preventDefault();
+  const handleLogin = () => {
     setLoginError('');
-    
     const user = MOCK_USERS[loginEmail];
     if (user && user.password === loginPassword) {
       setCurrentUser({ ...user, email: loginEmail });
@@ -88,14 +72,12 @@ const RajogunaPWA = () => {
   const handleLogout = () => {
     setCurrentUser(null);
     setCurrentScreen('login');
-    setMenuOpen(false);
   };
 
   const handleChatSend = () => {
     if (chatInput.trim()) {
       setChatMessages([...chatMessages, { sender: 'user', text: chatInput }]);
       
-      // Simple bot responses
       setTimeout(() => {
         let botResponse = 'I understand your query. Let me help you with that.';
         if (chatInput.toLowerCase().includes('fee')) {
@@ -112,7 +94,6 @@ const RajogunaPWA = () => {
     }
   };
 
-  // Login Screen
   const LoginScreen = () => (
     <div className="min-h-screen bg-gradient-to-br from-purple-600 via-pink-500 to-orange-400 flex items-center justify-center p-4">
       <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md p-8">
@@ -124,7 +105,7 @@ const RajogunaPWA = () => {
           <p className="text-gray-600">Dance & Music Institute</p>
         </div>
 
-        <form onSubmit={handleLogin} className="space-y-4">
+        <div className="space-y-4">
           {loginError && (
             <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
               {loginError}
@@ -141,7 +122,6 @@ const RajogunaPWA = () => {
                 onChange={(e) => setLoginEmail(e.target.value)}
                 className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                 placeholder="Enter your email"
-                required
               />
             </div>
           </div>
@@ -154,9 +134,9 @@ const RajogunaPWA = () => {
                 type={showPassword ? 'text' : 'password'}
                 value={loginPassword}
                 onChange={(e) => setLoginPassword(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && handleLogin()}
                 className="w-full pl-12 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                 placeholder="Enter your password"
-                required
               />
               <button
                 type="button"
@@ -169,12 +149,12 @@ const RajogunaPWA = () => {
           </div>
 
           <button
-            type="submit"
+            onClick={handleLogin}
             className="w-full bg-gradient-to-r from-purple-600 to-pink-500 text-white py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-pink-600 transition-all shadow-lg"
           >
             Sign In
           </button>
-        </form>
+        </div>
 
         <div className="mt-6 p-4 bg-gray-50 rounded-lg">
           <p className="text-xs text-gray-600 font-semibold mb-2">Demo Credentials:</p>
@@ -187,22 +167,15 @@ const RajogunaPWA = () => {
     </div>
   );
 
-  // Student Dashboard
   const StudentDashboard = () => {
     const userData = currentUser;
     const dueAmount = userData.totalFees - userData.paidFees;
 
     return (
       <div className="min-h-screen bg-gray-50">
-        {/* Header */}
         <header className="bg-gradient-to-r from-purple-600 to-pink-500 text-white p-4 sticky top-0 z-40 shadow-lg">
           <div className="max-w-7xl mx-auto flex justify-between items-center">
-            <div className="flex items-center gap-3">
-              <button onClick={() => setMenuOpen(!menuOpen)} className="lg:hidden">
-                {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-              </button>
-              <h1 className="text-xl font-bold">RAJOGUNA</h1>
-            </div>
+            <h1 className="text-xl font-bold">RAJOGUNA</h1>
             <div className="flex items-center gap-3">
               <Bell className="w-5 h-5 cursor-pointer hover:scale-110 transition-transform" />
               <button onClick={handleLogout} className="flex items-center gap-2 bg-white/20 px-3 py-2 rounded-lg hover:bg-white/30 transition-all">
@@ -214,13 +187,11 @@ const RajogunaPWA = () => {
         </header>
 
         <div className="max-w-7xl mx-auto p-4">
-          {/* Welcome Card */}
           <div className="bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl p-6 text-white mb-6 shadow-lg">
             <h2 className="text-2xl font-bold mb-2">Welcome back, {userData.name}! 👋</h2>
             <p className="opacity-90">Department: {userData.department}</p>
           </div>
 
-          {/* Stats Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             <div className="bg-white rounded-xl p-5 shadow-md border-l-4 border-green-500">
               <div className="flex items-center justify-between mb-2">
@@ -255,25 +226,23 @@ const RajogunaPWA = () => {
             </div>
           </div>
 
-          {/* Quick Actions */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
             {[
-              { icon: Calendar, label: 'Attendance', color: 'purple' },
-              { icon: DollarSign, label: 'Pay Fees', color: 'pink' },
-              { icon: BookOpen, label: 'Resources', color: 'orange' },
-              { icon: Award, label: 'Certificates', color: 'blue' }
+              { icon: Calendar, label: 'Attendance', color: '#8B5CF6' },
+              { icon: DollarSign, label: 'Pay Fees', color: '#EC4899' },
+              { icon: BookOpen, label: 'Resources', color: '#F97316' },
+              { icon: Award, label: 'Certificates', color: '#3B82F6' }
             ].map((action, idx) => (
               <button
                 key={idx}
                 className="bg-white rounded-xl p-6 shadow-md hover:shadow-xl transition-all hover:scale-105 flex flex-col items-center gap-2"
               >
-                <action.icon className={`w-8 h-8 text-${action.color}-500`} />
+                <action.icon className="w-8 h-8" style={{ color: action.color }} />
                 <span className="text-sm font-semibold text-gray-700">{action.label}</span>
               </button>
             ))}
           </div>
 
-          {/* Notices */}
           <div className="bg-white rounded-xl shadow-md p-6 mb-6">
             <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
               <Bell className="w-6 h-6 text-purple-600" />
@@ -290,7 +259,6 @@ const RajogunaPWA = () => {
             </div>
           </div>
 
-          {/* Payment Section */}
           {dueAmount > 0 && (
             <div className="bg-gradient-to-r from-red-50 to-orange-50 rounded-xl shadow-md p-6 border-2 border-red-200">
               <h3 className="text-xl font-bold text-red-700 mb-4 flex items-center gap-2">
@@ -318,13 +286,11 @@ const RajogunaPWA = () => {
           )}
         </div>
 
-        {/* Chatbot */}
         <ChatbotWidget />
       </div>
     );
   };
 
-  // Admin Dashboard
   const AdminDashboard = () => (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-gradient-to-r from-purple-600 to-pink-500 text-white p-4 sticky top-0 z-40 shadow-lg">
@@ -341,43 +307,40 @@ const RajogunaPWA = () => {
       </header>
 
       <div className="max-w-7xl mx-auto p-4">
-        {/* Stats */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
           {[
-            { label: 'Total Students', value: students.length, icon: Users, color: 'blue' },
-            { label: 'Dance Students', value: students.filter(s => s.dept === 'Dance').length, icon: Music, color: 'pink' },
-            { label: 'Music Students', value: students.filter(s => s.dept === 'Music').length, icon: Music, color: 'purple' },
-            { label: 'Pending Payments', value: '₹20,000', icon: DollarSign, color: 'orange' }
+            { label: 'Total Students', value: students.length, icon: Users, color: '#3B82F6' },
+            { label: 'Dance Students', value: students.filter(s => s.dept === 'Dance').length, icon: Sparkles, color: '#EC4899' },
+            { label: 'Music Students', value: students.filter(s => s.dept === 'Music').length, icon: Sparkles, color: '#8B5CF6' },
+            { label: 'Pending Payments', value: '₹20,000', icon: DollarSign, color: '#F97316' }
           ].map((stat, idx) => (
-            <div key={idx} className={`bg-white rounded-xl p-5 shadow-md border-l-4 border-${stat.color}-500`}>
+            <div key={idx} className="bg-white rounded-xl p-5 shadow-md border-l-4" style={{ borderColor: stat.color }}>
               <div className="flex items-center justify-between mb-2">
                 <span className="text-gray-600 text-sm">{stat.label}</span>
-                <stat.icon className={`w-5 h-5 text-${stat.color}-500`} />
+                <stat.icon className="w-5 h-5" style={{ color: stat.color }} />
               </div>
               <p className="text-3xl font-bold text-gray-800">{stat.value}</p>
             </div>
           ))}
         </div>
 
-        {/* Quick Actions */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
           {[
-            { icon: Users, label: 'Manage Students', color: 'purple' },
-            { icon: Calendar, label: 'Attendance', color: 'blue' },
-            { icon: DollarSign, label: 'Payments', color: 'green' },
-            { icon: Bell, label: 'Post Notice', color: 'orange' }
+            { icon: Users, label: 'Manage Students', color: '#8B5CF6' },
+            { icon: Calendar, label: 'Attendance', color: '#3B82F6' },
+            { icon: DollarSign, label: 'Payments', color: '#10B981' },
+            { icon: Bell, label: 'Post Notice', color: '#F97316' }
           ].map((action, idx) => (
             <button
               key={idx}
               className="bg-white rounded-xl p-6 shadow-md hover:shadow-xl transition-all hover:scale-105 flex flex-col items-center gap-2"
             >
-              <action.icon className={`w-8 h-8 text-${action.color}-500`} />
+              <action.icon className="w-8 h-8" style={{ color: action.color }} />
               <span className="text-sm font-semibold text-gray-700">{action.label}</span>
             </button>
           ))}
         </div>
 
-        {/* Student List */}
         <div className="bg-white rounded-xl shadow-md p-6">
           <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
             <Users className="w-6 h-6 text-purple-600" />
@@ -418,7 +381,6 @@ const RajogunaPWA = () => {
     </div>
   );
 
-  // Chatbot Widget
   const ChatbotWidget = () => (
     <>
       <button
@@ -470,7 +432,6 @@ const RajogunaPWA = () => {
     </>
   );
 
-  // Render current screen
   return (
     <>
       {currentScreen === 'login' && <LoginScreen />}
