@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Lock, Mail, LogOut, Menu, Calendar, BookOpen, DollarSign, MessageCircle, Award, Bell, Users, Settings, Eye, EyeOff, Sparkles, X } from 'lucide-react';
+import { Lock, Mail, LogOut, Calendar, BookOpen, DollarSign, MessageCircle, Award, Bell, Users, Settings, Eye, EyeOff, Sparkles, X } from 'lucide-react';
 
 const MOCK_USERS = {
   'admin@rajoguna.com': {
