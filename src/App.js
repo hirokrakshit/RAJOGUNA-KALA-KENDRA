@@ -1183,14 +1183,13 @@ export default RajogunaPWA;3 bg-gray-50 rounded-lg">
                   required
                 />
               </div>
-              <div>
-                <label className="block text-sm font-semibold mb-2">Upload Payment Proof (Screenshot/Receipt)</label>
-                <input
-                  type="file"
-                  onChange={(e) => setPaymentForm({ ...paymentForm, proof: e.target.files[0] })}
-                  className="w-full px-4 py-2 border-2 rounded-lg focus:border-purple-500 focus:outline-none"
-                  accept="image/*"
-                  required
-                />
-              </div>
-              <div className="p-
+              <div>return (
+    <>
+      {currentScreen === 'login' && <LoginScreen />}
+      {currentScreen === 'student-dashboard' && <StudentDashboard />}
+      {currentScreen === 'admin-dashboard' && <AdminDashboard />}
+    </>
+  );
+};
+
+export default RajogunaPWA;
