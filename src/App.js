@@ -1813,5 +1813,13 @@ export default RajogunaPWA;  {msg.text && (
       </nav>
 
       <div className="max-w-7xl mx-auto p-4">
-        >Admin:</strong> admin@rajoguna.com / Admin@123</p>
-            <p><strong
+        </div>
+      </div>
+    </div>
+  );
+}
+
+return null;
+};
+
+export default RajogunaPWA;
