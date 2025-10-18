@@ -8,6 +8,7 @@
     "react-scripts": "5.0.1",
     "lucide-react": "^0.263.1"
   },
+  "build": "CI=false react-scripts build",
   "scripts": {
     "start": "react-scripts start",
     "build": "CI=false react-scripts build",
